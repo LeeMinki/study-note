@@ -24,11 +24,21 @@ const writeData = (data) => {
   fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
 };
 
-// GET /api/notes - 저장된 모든 노트 반환
+// GET /api/notes - 페이지네이션 지원 (limit, offset 쿼리 파라미터)
 app.get('/api/notes', (req, res) => {
   try {
     const notes = readData();
-    res.json({ success: true, data: notes, error: null });
+    const sorted = [...notes].sort((a, b) => new Date(b.date) - new Date(a.date));
+    const limit = parseInt(req.query.limit) || sorted.length;
+    const offset = parseInt(req.query.offset) || 0;
+    const paginated = sorted.slice(offset, offset + limit);
+    res.json({
+      success: true,
+      data: paginated,
+      total: sorted.length,
+      hasMore: offset + limit < sorted.length,
+      error: null,
+    });
   } catch (err) {
     res.status(500).json({ success: false, data: null, error: err.message });
   }

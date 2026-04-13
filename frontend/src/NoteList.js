@@ -1,13 +1,26 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
-function NoteList({ notes, onDelete, onUpdate, activeTag, onTagClick }) {
-  const sorted = [...notes].sort((a, b) => new Date(b.date) - new Date(a.date));
-  const filtered = activeTag
-    ? sorted.filter((n) => n.tags && n.tags.includes(activeTag))
-    : sorted;
+function NoteList({ notes, onDelete, onUpdate, activeTag, onTagClick, hasMore, loadingMore, onLoadMore }) {
+  const sentinelRef = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && hasMore && !loadingMore) {
+          onLoadMore();
+        }
+      },
+      { threshold: 0.1 }
+    );
+    const el = sentinelRef.current;
+    if (el) observer.observe(el);
+    return () => {
+      if (el) observer.unobserve(el);
+    };
+  }, [hasMore, loadingMore, onLoadMore]);
 
   const formatDate = (dateStr) => {
     const d = new Date(dateStr);
@@ -30,12 +43,12 @@ function NoteList({ notes, onDelete, onUpdate, activeTag, onTagClick }) {
           </button>
         </div>
       )}
-      {filtered.length === 0 ? (
+      {notes.length === 0 ? (
         <p className="empty-message">저장된 노트가 없습니다.</p>
       ) : (
         <>
-          <h2>노트 목록 ({filtered.length})</h2>
-          {filtered.map((note) => (
+          <h2>노트 목록 ({notes.length})</h2>
+          {notes.map((note) => (
             <NoteCard
               key={note.id}
               note={note}
@@ -47,6 +60,8 @@ function NoteList({ notes, onDelete, onUpdate, activeTag, onTagClick }) {
           ))}
         </>
       )}
+      <div ref={sentinelRef} className="sentinel" />
+      {loadingMore && <p className="loading-more">불러오는 중...</p>}
     </div>
   );
 }
