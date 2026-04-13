@@ -37,17 +37,58 @@ app.get('/api/notes', (req, res) => {
 // POST /api/notes - 새로운 노트 저장
 app.post('/api/notes', (req, res) => {
   try {
-    const { title, content, date } = req.body;
+    const { title, content, date, tags } = req.body;
     const notes = readData();
     const newNote = {
       id: Date.now().toString(),
       title,
       content,
+      tags: tags || [],
       date: date || new Date().toISOString(),
     };
     notes.push(newNote);
     writeData(notes);
     res.status(201).json({ success: true, data: newNote, error: null });
+  } catch (err) {
+    res.status(500).json({ success: false, data: null, error: err.message });
+  }
+});
+
+// PUT /api/notes/:id - 노트 수정
+app.put('/api/notes/:id', (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, content, tags } = req.body;
+    const notes = readData();
+    const index = notes.findIndex((n) => n.id === id);
+    if (index === -1) {
+      return res.status(404).json({ success: false, data: null, error: '노트를 찾을 수 없습니다.' });
+    }
+    notes[index] = {
+      ...notes[index],
+      title,
+      content,
+      tags: tags !== undefined ? tags : (notes[index].tags || []),
+    };
+    writeData(notes);
+    res.json({ success: true, data: notes[index], error: null });
+  } catch (err) {
+    res.status(500).json({ success: false, data: null, error: err.message });
+  }
+});
+
+// DELETE /api/notes/:id - 노트 삭제
+app.delete('/api/notes/:id', (req, res) => {
+  try {
+    const { id } = req.params;
+    const notes = readData();
+    const index = notes.findIndex((n) => n.id === id);
+    if (index === -1) {
+      return res.status(404).json({ success: false, data: null, error: '노트를 찾을 수 없습니다.' });
+    }
+    const deleted = notes.splice(index, 1)[0];
+    writeData(notes);
+    res.json({ success: true, data: deleted, error: null });
   } catch (err) {
     res.status(500).json({ success: false, data: null, error: err.message });
   }

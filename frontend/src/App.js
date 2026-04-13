@@ -6,6 +6,7 @@ import './App.css';
 
 function App() {
   const [notes, setNotes] = useState([]);
+  const [activeTag, setActiveTag] = useState(null);
 
   useEffect(() => {
     const fetchNotes = async () => {
@@ -25,6 +26,28 @@ function App() {
     setNotes((prev) => [newNote, ...prev]);
   };
 
+  const handleDelete = async (id) => {
+    try {
+      const response = await axios.delete(`http://localhost:4000/api/notes/${id}`);
+      if (response.data.success) {
+        setNotes((prev) => prev.filter((n) => n.id !== id));
+      }
+    } catch (err) {
+      console.error('노트 삭제 실패:', err);
+    }
+  };
+
+  const handleUpdate = async (id, updates) => {
+    try {
+      const response = await axios.put(`http://localhost:4000/api/notes/${id}`, updates);
+      if (response.data.success) {
+        setNotes((prev) => prev.map((n) => (n.id === id ? response.data.data : n)));
+      }
+    } catch (err) {
+      console.error('노트 수정 실패:', err);
+    }
+  };
+
   return (
     <div className="app">
       <header className="app-header">
@@ -33,7 +56,13 @@ function App() {
       </header>
       <main className="app-main">
         <NoteForm onSave={handleSave} />
-        <NoteList notes={notes} />
+        <NoteList
+          notes={notes}
+          onDelete={handleDelete}
+          onUpdate={handleUpdate}
+          activeTag={activeTag}
+          onTagClick={setActiveTag}
+        />
       </main>
     </div>
   );

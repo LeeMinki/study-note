@@ -32,6 +32,7 @@ body {
   font-size: 0.95rem;
 }
 
+/* 폼 */
 .note-form {
   background: #fff;
   border-radius: 12px;
@@ -91,6 +92,7 @@ body {
   cursor: not-allowed;
 }
 
+/* 리스트 */
 .note-list h2 {
   font-size: 1.1rem;
   color: #2c3e50;
@@ -105,21 +107,183 @@ body {
   margin-bottom: 16px;
 }
 
+/* 카드 헤더 (제목 + 수정/삭제 버튼) */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+  gap: 8px;
+}
+
 .note-title {
   font-size: 1rem;
   font-weight: 600;
   color: #2c3e50;
+  flex: 1;
+}
+
+/* 수정/삭제/저장/취소 버튼 */
+.card-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+  margin-top: 12px;
+}
+
+.card-header .card-actions {
+  margin-top: 0;
+}
+
+.btn-edit,
+.btn-delete,
+.btn-save,
+.btn-cancel {
+  padding: 4px 10px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-edit {
+  background-color: #ecf0f1;
+  color: #555;
+}
+
+.btn-edit:hover {
+  background-color: #dde4e6;
+}
+
+.btn-delete {
+  background-color: #fdecea;
+  color: #e74c3c;
+}
+
+.btn-delete:hover {
+  background-color: #fad7d3;
+}
+
+.btn-save {
+  background-color: #3498db;
+  color: #fff;
+}
+
+.btn-save:hover {
+  background-color: #2980b9;
+}
+
+.btn-cancel {
+  background-color: #ecf0f1;
+  color: #555;
+}
+
+.btn-cancel:hover {
+  background-color: #dde4e6;
+}
+
+/* 마크다운 본문 */
+.note-content.markdown-body {
+  font-size: 0.9rem;
+  color: #444;
+  line-height: 1.7;
+  margin-bottom: 12px;
+}
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3 {
+  margin: 12px 0 6px;
+  color: #2c3e50;
+}
+
+.markdown-body p {
   margin-bottom: 8px;
 }
 
-.note-content {
-  font-size: 0.9rem;
-  color: #555;
-  line-height: 1.6;
-  margin-bottom: 12px;
-  white-space: pre-wrap;
+.markdown-body ul,
+.markdown-body ol {
+  margin-left: 20px;
+  margin-bottom: 8px;
 }
 
+.markdown-body code {
+  background: #f0f4f8;
+  padding: 2px 5px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-family: 'SFMono-Regular', Consolas, monospace;
+}
+
+.markdown-body pre {
+  margin: 8px 0;
+  border-radius: 8px;
+  overflow: auto;
+}
+
+.markdown-body blockquote {
+  border-left: 3px solid #3498db;
+  padding-left: 12px;
+  color: #7f8c8d;
+  margin: 8px 0;
+}
+
+/* 태그 */
+.note-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.tag-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  background-color: #eaf4fd;
+  color: #2980b9;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.tag-badge:hover {
+  background-color: #d0eaf9;
+}
+
+/* 필터 바 */
+.filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding: 10px 14px;
+  background: #eaf4fd;
+  border-radius: 8px;
+  font-size: 0.88rem;
+}
+
+.filter-tag {
+  color: #2980b9;
+  font-weight: 600;
+}
+
+.filter-clear {
+  background: none;
+  border: none;
+  color: #7f8c8d;
+  cursor: pointer;
+  font-size: 0.82rem;
+  text-decoration: underline;
+  padding: 0;
+}
+
+.filter-clear:hover {
+  color: #555;
+}
+
+/* 날짜 */
 .note-date {
   font-size: 0.8rem;
   color: #95a5a6;
